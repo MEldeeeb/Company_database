@@ -1,0 +1,55 @@
+-- Agrigation
+SELECT sum(total_sales),emp_id from Works_With group by emp_id;
+SELECT sum(total_sales),client_id from Works_With group by client_id;
+
+
+--WILDCARDS TO FIND PATTERNS 
+SELECT supplier_name FROM Branch_Supplier WHERE supplier_name LIKE '%Lables%';
+SELECT first_name ,last_name FROM Employee WHERE birth_date LIKE '____-02-__';
+
+
+--union
+--Branch.branch_name = branch_name
+SELECT first_name AS NAMES FROM Employee  
+UNION
+SELECT Branch.branch_name FROM Branch     
+UNION   
+SELECT client_name FROM CLIENTT;
+
+SELECT salary FROM Employee 
+UNION 
+SELECT total_sales FROM Works_With;
+
+
+
+--join
+--find names of Branch and their mangesrs 
+
+SELECT emp_id,first_name,last_name ,branch_name FROM Employee JOIN Branch ON emp_id = mgr_id ; -- INER JOIN
+
+SELECT emp_id,first_name,last_name ,branch_name FROM Employee LEFT JOIN Branch ON emp_id = mgr_id ; -- LEFT JOIN
+
+SELECT emp_id,first_name,last_name ,branch_name FROM Employee RIGHT JOIN Branch ON emp_id = mgr_id ; -- RIGHT JOIN 
+ 
+ 
+-- nested queries
+
+-- find names of all employees who have 
+-- sold over 30000 to a single client 
+
+SELECT first_name 
+FROM Employee WHERE emp_id  IN ( SELECT Works_With.emp_id FROM Works_With WHERE total_sales >30000);
+
+
+
+SELECT CLIENTT.client_name 
+FROM CLIENTT 
+    WHERE branch_id = (
+                        SELECT Branch.branch_id 
+                        FROM Branch 
+                            WHERE mgr_id = (
+                                            SELECT emp_id 
+                                            FROM Employee 
+                                                WHERE first_name = 'Michael' AND last_name = 'Scott'
+                                           ) 
+                     );
